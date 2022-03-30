@@ -79,33 +79,31 @@ switcher.on("stateChanged", (state) => {
     tally.status = "transition";
     tally.color = color[tally.status];
     tally.text = text[tally.status];
-
-    console.log("Status : ", tally);
     // lights.yellow();
-  } else if (program === config.inputID) {
+  } else if (
+    program === config.inputID ||
+    (state.video.ME[0].upstreamKeyers[0] &&
+      state.video.ME[0].upstreamKeyers[0].onAir &&
+      state.video.ME[0].upstreamKeyers[0].fillSource === config.inputID)
+  ) {
     tally.status = "program";
     tally.color = color[tally.status];
     tally.text = text[tally.status];
-
-    console.log("Status : ", tally);
     // lights.red();
   } else if (preview === config.inputID) {
     tally.status = "preview";
     tally.color = color[tally.status];
     tally.text = text[tally.status];
-
-    console.log("Status : ", tally);
-
     // lights.green();
   } else {
     tally.status = "off";
     tally.color = color[tally.status];
     tally.text = text[tally.status];
-
-    console.log("Status : ", tally);
     // Camera is not in preview or program
     // lights.off();
   }
+  console.log("Status : ", tally, program, preview, dve);
+  // console.log("*** ", state.video.ME[0].upstreamKeyers[0], "***");
 });
 
 // get tally IP address
