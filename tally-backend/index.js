@@ -90,7 +90,12 @@ switcher.on("stateChanged", (state) => {
     tally.color = color[tally.status];
     tally.text = text[tally.status];
     // lights.red();
-  } else if (preview === config.inputID) {
+  } else if (
+    preview === config.inputID ||
+    (state.video.ME[0].transitionProperties.selection > 1 &&
+      !state.video.ME[0].upstreamKeyers[0].onAir &&
+      state.video.ME[0].upstreamKeyers[0].fillSource === config.inputID)
+  ) {
     tally.status = "preview";
     tally.color = color[tally.status];
     tally.text = text[tally.status];
@@ -102,8 +107,9 @@ switcher.on("stateChanged", (state) => {
     // Camera is not in preview or program
     // lights.off();
   }
-  console.log("Status : ", tally, program, preview, dve);
+  console.log("Status : ", tally, program, preview);
   // console.log("*** ", state.video.ME[0].upstreamKeyers[0], "***");
+  // console.log("*** ", state.video.ME[0], "***");
 });
 
 // get tally IP address
