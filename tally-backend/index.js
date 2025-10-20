@@ -108,11 +108,11 @@ switcher.on("stateChanged", (state) => {
     var isInSuperSource = false;
     
     if (suso && suso.boxes) {
-      console.log("Checking SuperSource boxes for input", config.inputID);
+      // console.log("Checking SuperSource boxes for input", config.inputID);
       for (let boxId in suso.boxes) {
         const box = suso.boxes[boxId];
         if (box.enabled && box.source === config.inputID) {
-          console.log(`*** Input ${config.inputID} found in SuperSource box ${boxId} ***`);
+          // console.log(`*** Input ${config.inputID} found in SuperSource box ${boxId} ***`);
           isInSuperSource = true;
           break;
         }
@@ -129,7 +129,7 @@ switcher.on("stateChanged", (state) => {
       tally.status = "off";
       tally.color = color[tally.status];
       tally.text = text[tally.status];
-      // Camera is not in preview or program
+      // Camera is not in preview, program or any of the supersource boxes
       // lights.off();
     }
   }
