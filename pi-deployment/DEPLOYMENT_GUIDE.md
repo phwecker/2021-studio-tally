@@ -12,6 +12,26 @@ This guide provides step-by-step instructions for deploying the ATEM Tally syste
 - SSH access to the Raspberry Pi
 - Computer with SD card reader for initial setup
 
+## ⚠️ CRITICAL: Operating System Compatibility
+
+**IMPORTANT**: Use **Raspberry Pi OS (Bookworm)** or the **latest stable Raspberry Pi OS** from Raspberry Pi Imager.
+
+**DO NOT use Debian Trixie (testing/unstable)** - The Node.js packages in Debian Trixie are compiled with CPU instructions that the Raspberry Pi 4 does not support, causing an "Illegal instruction" error that makes the system completely non-functional.
+
+✅ **Recommended**: Raspberry Pi OS (64-bit) from the official Raspberry Pi Imager
+❌ **Not Supported**: Debian Trixie, Debian testing, or any unstable/development distributions
+
+If you accidentally deployed with Debian Trixie, Node.js can be fixed by installing from NodeSource:
+
+```bash
+# Remove broken Node.js
+sudo apt remove -y nodejs nodejs-doc && sudo apt autoremove -y
+
+# Install from NodeSource
+curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+sudo apt install -y nodejs
+```
+
 ## Hardware Setup & Pre-Boot Configuration
 
 ### Step 1: Flash the OS and Enable SSH & VNC
@@ -19,6 +39,8 @@ This guide provides step-by-step instructions for deploying the ATEM Tally syste
 1. **Open Raspberry Pi Imager** and prepare to flash your microSD card
 
 2. **Select Operating System**: Choose **Raspberry Pi OS (64-bit)** or **Raspberry Pi OS with Desktop** (recommended for VNC support)
+
+   **⚠️ VERIFY**: Ensure you're selecting **Raspberry Pi OS**, NOT Debian Trixie or testing distributions
 
 3. **Configure OS Settings (IMPORTANT)** - Click the gear icon ⚙️ (Advanced Options) before writing:
 
