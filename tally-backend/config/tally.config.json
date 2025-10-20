@@ -1,6 +1,6 @@
 {
   "inputID": 1,
-  "switcherIP": "192.168.2.5",
+  "switcherIP": "192.168.10.240",
   "ledGpioPins": {
     "red": 17,
     "green": 22,

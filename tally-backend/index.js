@@ -11,6 +11,7 @@ const color = {
   program: "#FF0000",
   preview: "#00FF00",
   transition: "#FFFF00",
+  supersource: "#ff00bf",
   off: "#666666",
 };
 
@@ -18,6 +19,7 @@ const text = {
   program: "ON AIR",
   preview: "UP NEXT",
   transition: "IN TRANSITION",
+  supersource: "SUPERSOURCE",
   off: "NOT SELECTED",
 };
 
@@ -101,15 +103,38 @@ switcher.on("stateChanged", (state) => {
     tally.text = text[tally.status];
     // lights.green();
   } else {
-    tally.status = "off";
-    tally.color = color[tally.status];
-    tally.text = text[tally.status];
-    // Camera is not in preview or program
-    // lights.off();
+    // Check if our input is being used in SuperSource
+    var suso = state.video.superSources && state.video.superSources[0];
+    var isInSuperSource = false;
+    
+    if (suso && suso.boxes) {
+      console.log("Checking SuperSource boxes for input", config.inputID);
+      for (let boxId in suso.boxes) {
+        const box = suso.boxes[boxId];
+        if (box.enabled && box.source === config.inputID) {
+          console.log(`*** Input ${config.inputID} found in SuperSource box ${boxId} ***`);
+          isInSuperSource = true;
+          break;
+        }
+      }
+    }
+    
+    if (isInSuperSource && program === 6000) {
+      // Our input is in SuperSource AND SuperSource is on program
+      tally.status = "supersource";
+      tally.color = color[tally.status];
+      tally.text = text[tally.status];
+      // lights.blue();
+    } else {
+      tally.status = "off";
+      tally.color = color[tally.status];
+      tally.text = text[tally.status];
+      // Camera is not in preview or program
+      // lights.off();
+    }
   }
-  console.log("Status : ", tally, program, preview);
-  // console.log("*** ", state.video.ME[0].upstreamKeyers[0], "***");
-  // console.log("*** ", state.video.ME[0], "***");
+  console.log("Final tally status:", tally.status, "for input", config.inputID);
+  
 });
 
 // get tally IP address

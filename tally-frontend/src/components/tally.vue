@@ -77,6 +77,10 @@ export default {
   background-color: yellow;
   color: black;
 }
+.supersource {
+  background-color: magenta;
+  color: white;
+}
 .off {
   background-color: gray;
   color: #666666;
