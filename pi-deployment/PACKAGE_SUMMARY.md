@@ -27,47 +27,45 @@ All scripts are executable and located in `scripts/`:
 
 ## 🚀 How to Use This Package
 
-### ⚠️ IMPORTANT: Static IP Configuration Required
+### ⚠️ IMPORTANT: Install First, Then Configure Static IP
 
-**This network does NOT provide DHCP.** You MUST configure a static IP address BEFORE first boot.
+**The studio network does NOT provide DHCP or internet access.** You MUST complete all installations BEFORE configuring static IP and moving to the studio network.
 
 ### Deploying Your First Device
 
-**Step 0: Pre-Boot Configuration (REQUIRED)**
+**Step 0: Flash and Configure SD Card**
 
-Before inserting SD card into Pi:
+Use Raspberry Pi Imager to flash and configure in one step:
 
-```bash
-# 1. Flash Raspberry Pi OS Lite to SD card
-# 2. Re-insert SD card into computer
-# 3. Create SSH enable file
-touch /Volumes/bootfs/ssh
-
-# 4. Create static IP configuration file
-nano /Volumes/bootfs/dhcpcd.conf
-# Add:
-# interface eth0
-# static ip_address=192.168.10.171/24
-# static routers=192.168.10.1
-# static domain_name_servers=192.168.10.1 8.8.8.8
-
-# 5. Eject SD card, insert into Pi, boot, wait 60 seconds
-```
+1. Open Raspberry Pi Imager
+2. Select Raspberry Pi OS (with Desktop recommended for VNC)
+3. Click gear icon ⚙️ (Advanced Options):
+   - ✅ Enable SSH (password authentication)
+   - Set username/password (default: pi/raspberry or customize)
+   - Set hostname (optional)
+   - Configure WiFi if needed (optional, Ethernet recommended)
+4. Write to SD card
+5. Eject and insert into Pi
+6. Boot on internet-connected network with DHCP
+7. Find Pi's IP from router, SSH in
+8. Complete all installs while on internet
+9. Configure static IP (after installs)
+10. Move to studio network
 
 **Then proceed with deployment:**
 
 ```bash
 # 1. From your Mac, in the project directory
 ./pi-deployment/scripts/deploy-to-pi.sh
-# Enter the static IP you configured: 192.168.10.171
+# Enter the Pi's temporary IP address (on internet network)
 
 # 2. SSH to the Pi
-ssh pi@192.168.10.171
+ssh pi@<temporary-ip>
 
-# 3. Install everything
+# 3. Install everything (while on internet)
 /tmp/tally-scripts/install-tally.sh
 
-# 4. Configure device settings
+# 4. Configure static IP, move to studio network, then configure device settings
 /tmp/tally-scripts/configure-device.sh
 # Enter: Camera ID (1), confirm Static IP (192.168.10.171), etc.
 

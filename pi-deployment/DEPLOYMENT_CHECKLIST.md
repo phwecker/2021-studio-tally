@@ -181,7 +181,7 @@ Choose ONE method:
 - [ ] Check logs: `sudo journalctl -u kiosk.service -n 50`
 - [ ] Check X errors: `cat ~/.xsession-errors`
 - [ ] Test manually: `startx`
-- [ ] Verify Chromium is installed: `which chromium-browser`
+- [ ] Verify Chromium is installed: `which chromium`
 
 ### Wrong Camera Number
 

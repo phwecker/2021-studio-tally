@@ -14,23 +14,33 @@ This guide provides step-by-step instructions for deploying the ATEM Tally syste
 
 ## Hardware Setup & Pre-Boot Configuration
 
-### Step 1: Flash the OS and Enable SSH
+### Step 1: Flash the OS and Enable SSH & VNC
 
-1. **Flash Raspberry Pi OS Lite (64-bit)** to your microSD card using Raspberry Pi Imager
+1. **Open Raspberry Pi Imager** and prepare to flash your microSD card
 
-2. **After flashing, re-insert the SD card** into your computer to access the boot partition
+2. **Select Operating System**: Choose **Raspberry Pi OS (64-bit)** or **Raspberry Pi OS with Desktop** (recommended for VNC support)
 
-3. **Enable SSH** - Create an empty file named `ssh` (no extension) in the boot partition:
+3. **Configure OS Settings (IMPORTANT)** - Click the gear icon ⚙️ (Advanced Options) before writing:
 
-   ```bash
-   # On macOS/Linux:
-   touch /Volumes/bootfs/ssh
+   **General Settings:**
 
-   # On Windows (in boot drive, e.g., E:):
-   # Create empty file named: ssh
-   ```
+   - ✅ **Enable SSH** - Choose "Use password authentication" (or set up SSH keys if preferred)
+   - Set hostname (e.g., `raspberrypi` or `tally-cam1`)
+   - Set username and password (default: `pi` / `raspberry`, but you can customize)
+   - Configure wireless LAN if needed (optional, Ethernet recommended)
+   - Set locale settings (timezone, keyboard layout)
 
-4. **Eject the SD card safely** from your computer
+   **Services:**
+
+   - ✅ **Enable SSH** (use password authentication)
+
+   > **Note:** VNC cannot be enabled from the imager. You'll enable it after first boot via `raspi-config`.
+
+4. **Write to SD card** - Select your SD card and click "Write"
+
+5. **Eject the SD card safely** from your computer after writing completes
+
+   > **Important:** With Raspberry Pi Imager's configuration, you no longer need to manually create an `ssh` file or edit config files on the boot partition. Everything is handled by the imager.
 
 ### Step 2: First Boot and Network Access
 
@@ -48,18 +58,26 @@ Since the studio network (192.168.10.x) does **NOT have internet access**, you M
 6. THEN configure static IP (Step 5)
 7. Move Pi to studio network
 
-**Option A: Temporary DHCP Network with Internet (Recommended)**
+**Option A: Temporary DHCP Network with Internet (Recommended - Fully Remote)**
 
 1. Temporarily connect the Pi to a network with DHCP AND internet access (e.g., your main network)
 2. Insert microSD card into Raspberry Pi
 3. Connect Ethernet cable to internet-connected network
-4. Connect HDMI display
-5. Power on and wait ~60 seconds for boot
-6. Find the Pi's assigned IP address (check router DHCP leases)
-7. SSH into Pi: `ssh pi@<temporary-ip>`
-8. **IMPORTANT: Complete Steps 3-4 (updates & installs) while on this network**
-9. After installation complete, proceed to Step 5 to configure static IP
-10. Then move Pi to studio network
+4. Power on and wait ~60 seconds for boot
+5. Find the Pi's assigned IP address (check router DHCP leases)
+6. **SSH into Pi**: `ssh pi@<temporary-ip>`
+7. **Enable VNC for remote GUI access** (optional but recommended):
+   ```bash
+   sudo raspi-config
+   # Navigate to: Interface Options → VNC → Yes
+   # Reboot when prompted
+   ```
+8. **Connect via VNC** (optional): Use a VNC client (like RealVNC Viewer) to connect to `<temporary-ip>:5900`
+9. **IMPORTANT: Complete Steps 3-4 (updates & installs) while on this network**
+10. After installation complete, proceed to Step 5 to configure static IP
+11. Then move Pi to studio network
+
+> **VNC Benefit:** With VNC enabled, you can complete all remaining steps remotely without needing a physical display. You can verify the kiosk mode display, troubleshoot visual issues, and configure everything from your computer.
 
 **Option B: Direct Configuration via Display (No Internet During Setup)**
 
@@ -95,7 +113,15 @@ While SSH'd into the Pi on the temporary network:
 3. **Install required dependencies**:
 
    ```bash
-   sudo apt install -y nodejs npm git chromium-browser xserver-xorg x11-xserver-utils xinit openbox unclutter
+   sudo apt install -y nodejs npm git chromium xserver-xorg x11-xserver-utils xinit openbox unclutter
+   ```
+
+   **If using VNC and you started with Raspberry Pi OS Lite**, also install VNC Server:
+
+   ```bash
+   sudo apt install -y realvnc-vnc-server
+   sudo raspi-config
+   # Navigate to: Interface Options → VNC → Yes
    ```
 
 4. **Verify Node.js installation**:

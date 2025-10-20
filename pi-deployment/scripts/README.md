@@ -169,17 +169,18 @@ You MUST complete all system updates and software installations BEFORE configuri
 
 **Step 0: Prepare SD Card**
 
-1. **Flash SD card** with Raspberry Pi OS Lite
+1. **Flash SD card** with Raspberry Pi OS using Raspberry Pi Imager
 
-2. **Re-insert SD card** into your computer
+2. **Configure settings** - Click gear icon ⚙️ in Raspberry Pi Imager:
 
-3. **Enable SSH**:
+   - ✅ Enable SSH (password authentication)
+   - Set username/password
+   - Set hostname (optional)
+   - Configure WiFi if needed (optional)
 
-   ```bash
-   touch /Volumes/bootfs/ssh
-   ```
+3. **Write to SD card** and wait for completion
 
-4. **Eject SD card** safely
+4. **Eject SD card** safely and insert into Raspberry Pi
 
 **Step 1: Boot on Internet-Connected Network**
 
@@ -195,7 +196,7 @@ You MUST complete all system updates and software installations BEFORE configuri
 
 ```bash
 sudo apt update && sudo apt upgrade -y
-sudo apt install -y nodejs npm git chromium-browser xserver-xorg x11-xserver-utils xinit openbox unclutter
+sudo apt install -y nodejs npm git chromium xserver-xorg x11-xserver-utils xinit openbox unclutter
 ```
 
 **Step 3: Deploy Application (REQUIRES INTERNET)**

@@ -4,12 +4,12 @@ This guide provides the fastest path to deploying your first tally device.
 
 ## Prerequisites Checklist
 
-- [ ] Raspberry Pi 4 with Raspberry Pi OS Lite installed
+- [ ] Raspberry Pi 4 with Raspberry Pi OS (Desktop recommended for VNC support)
 - [ ] **SSH enabled** (create empty `ssh` file in boot partition before first boot)
+- [ ] **VNC enabled** (optional but recommended for fully remote setup)
 - [ ] **Network access** configured (see Step 0 for options)
 - [ ] Pi connected to network via Ethernet
-- [ ] HDMI display connected to Pi
-- [ ] Pi powered on and accessible
+- [ ] VNC client installed on your computer (optional, for remote GUI access)
 
 ## Step 0: Pre-Boot Configuration & Network Setup
 
@@ -17,31 +17,45 @@ This guide provides the fastest path to deploying your first tally device.
 
 ### Part 1: Prepare SD Card
 
-1. **Flash Raspberry Pi OS Lite** to SD card using Raspberry Pi Imager
+1. **Open Raspberry Pi Imager** and select your microSD card
 
-2. **Re-insert SD card** into your computer after flashing
+2. **Select OS**: Choose **Raspberry Pi OS with Desktop** (recommended for VNC support)
 
-3. **Enable SSH** - Create an empty file named `ssh` in the boot partition:
+3. **Configure settings** - Click the gear icon ⚙️ (Advanced Options):
 
-   ```bash
-   # On macOS:
-   touch /Volumes/bootfs/ssh
-   ```
+   - ✅ Enable SSH (use password authentication)
+   - Set hostname (optional, e.g., `tally-cam1`)
+   - Set username/password (default: `pi` / `raspberry` or customize)
+   - Configure WiFi if needed (optional, Ethernet recommended)
+   - Set locale/timezone
 
-4. **Eject SD card** and insert into Raspberry Pi
+4. **Write to SD card** and wait for completion
+
+5. **Eject SD card** and insert into Raspberry Pi
+
+   > **Note:** Raspberry Pi Imager handles SSH enablement automatically. No need to manually create files on the boot partition.
 
 ### Part 2: First Boot on Internet-Connected Network
 
-**Option A: Temporary DHCP Network with Internet (Recommended)**
+**Option A: Temporary DHCP Network with Internet (Recommended - Fully Remote)**
 
 1. **Connect Pi to network with DHCP AND internet** (e.g., your main network)
 2. **Power on** and wait ~60 seconds
 3. **Find Pi's assigned IP** from router DHCP lease page
 4. **SSH into Pi**: `ssh pi@<temporary-ip>`
 5. **Change default password**: `passwd`
-6. **Continue to Step 1 below** - do ALL installs while on this network
-7. **THEN** configure static IP (Step 4)
-8. **Finally** move to studio network (Step 5)
+6. **Enable VNC for remote desktop** (recommended):
+   ```bash
+   sudo raspi-config
+   # Navigate to: Interface Options → VNC → Yes
+   # Exit and reboot: sudo reboot
+   ```
+7. **Connect via VNC** (optional): Use RealVNC Viewer to connect to `<temporary-ip>:5900`
+8. **Continue to Step 1 below** - do ALL installs while on this network
+9. **THEN** configure static IP (Step 4)
+10. **Finally** move to studio network (Step 5)
+
+> **VNC Benefit:** Complete all setup steps remotely without needing a physical display. Verify kiosk mode and troubleshoot visually from your computer.
 
 **Option B: Direct Configuration (No Internet - Advanced)**
 
@@ -57,7 +71,15 @@ This guide provides the fastest path to deploying your first tally device.
 
 ```bash
 sudo apt update && sudo apt upgrade -y
-sudo apt install -y nodejs npm git chromium-browser xserver-xorg x11-xserver-utils xinit openbox unclutter
+sudo apt install -y nodejs npm git chromium xserver-xorg x11-xserver-utils xinit openbox unclutter
+```
+
+**If you started with Raspberry Pi OS Lite and want VNC:**
+
+```bash
+sudo apt install -y realvnc-vnc-server
+sudo raspi-config
+# Navigate to: Interface Options → VNC → Yes
 ```
 
 Verify Node.js:
