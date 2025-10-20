@@ -92,17 +92,7 @@ switcher.on("stateChanged", (state) => {
     tally.color = color[tally.status];
     tally.text = text[tally.status];
     // lights.red();
-  } else if (
-    preview === config.inputID ||
-    (state.video.ME[0].transitionProperties.selection > 1 &&
-      !state.video.ME[0].upstreamKeyers[0].onAir &&
-      state.video.ME[0].upstreamKeyers[0].fillSource === config.inputID)
-  ) {
-    tally.status = "preview";
-    tally.color = color[tally.status];
-    tally.text = text[tally.status];
-    // lights.green();
-  } else {
+  } else if (program === 6000) {
     // Check if our input is being used in SuperSource
     var suso = state.video.superSources && state.video.superSources[0];
     var isInSuperSource = false;
@@ -125,15 +115,25 @@ switcher.on("stateChanged", (state) => {
       tally.color = color[tally.status];
       tally.text = text[tally.status];
       // lights.blue();
-    } else {
+    } 
+  } else if (
+    preview === config.inputID ||
+    (state.video.ME[0].transitionProperties.selection > 1 &&
+      !state.video.ME[0].upstreamKeyers[0].onAir &&
+      state.video.ME[0].upstreamKeyers[0].fillSource === config.inputID)
+  ) {
+    tally.status = "preview";
+    tally.color = color[tally.status];
+    tally.text = text[tally.status];
+    // lights.green();
+  } else {
       tally.status = "off";
       tally.color = color[tally.status];
       tally.text = text[tally.status];
-      // Camera is not in preview, program or any of the supersource boxes
+      // Camera is not in preview, program or any of the supersource boxes.
       // lights.off();
     }
-  }
-  console.log("Final tally status:", tally.status, "for input", config.inputID);
+  // console.log("Final tally status:", tally.status, "for input", config.inputID);
   
 });
 

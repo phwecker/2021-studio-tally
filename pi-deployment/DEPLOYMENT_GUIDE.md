@@ -104,6 +104,46 @@ While SSH'd into the Pi on the temporary network:
    # Enter new password when prompted
    ```
 
+### Step 4: Deploy and Install Application (REQUIRES INTERNET)
+
+⚠️ **DO THIS WHILE STILL CONNECTED TO INTERNET-ENABLED NETWORK**
+
+**🚀 Recommended: Scripted Installation (Option A)**
+
+This is the easiest method. The `install-tally.sh` script will automatically:
+
+- Update system packages
+- Install all dependencies (Node.js, Chromium, X11, etc.)
+- Install npm packages
+- Build frontend
+- Configure systemd services
+- Set up kiosk mode
+
+From your Mac terminal (while Pi is still on internet-connected network):
+
+```bash
+cd /Users/phwecker/Dropbox/MICROSOFT/studio/tally/atem-tally
+./pi-deployment/scripts/deploy-to-pi.sh
+# Enter the Pi's temporary IP address when prompted
+```
+
+Then on the Pi, run the installation:
+
+```bash
+/tmp/tally-scripts/install-tally.sh
+```
+
+The script will prompt you to confirm before proceeding. **This handles Steps 3-4 automatically.**
+
+---
+
+**📋 Alternative: Manual Installation (Option B - Fallback)**
+
+<details>
+<summary>Click to expand manual installation steps</summary>
+
+If the automated script fails or you prefer manual control, follow these steps:
+
 2. **Update the system**:
 
    ```bash
@@ -131,49 +171,30 @@ While SSH'd into the Pi on the temporary network:
    npm --version
    ```
 
-### Step 4: Deploy and Install Application (REQUIRES INTERNET)
-
-⚠️ **DO THIS WHILE STILL CONNECTED TO INTERNET-ENABLED NETWORK**
-
-**Option A: Using deploy script from your Mac**
-
-From your Mac terminal (while Pi is still on internet-connected network):
+5. **Deploy application files** - Use deploy script from Mac:
 
 ```bash
+# On your Mac:
 cd /Users/phwecker/Dropbox/MICROSOFT/studio/tally/atem-tally
 ./pi-deployment/scripts/deploy-to-pi.sh
-# Enter the Pi's temporary IP address when prompted
 ```
 
-Then on the Pi, run the installation:
+6. **Manually install application** - See "Manual Deployment" section at end of guide.
 
-```bash
-/tmp/tally-scripts/install-tally.sh
-```
+</details>
 
-This will:
+---
 
-- Install application files to `/opt/tally/`
-- Install npm packages (requires internet)
-- Build frontend
-- Configure systemd services
-- Set up kiosk mode
-
-**Option B: Manual deployment**
-
-If you prefer manual steps, see the "Manual Deployment" section at the end of this guide.
-
-**Option C: Manual deployment from GitHub (requires internet on Pi)**
+**🌐 Alternative: GitHub Clone (Option C)**
 
 If you prefer to clone the code directly from GitHub on the Pi:
 
 ```bash
+sudo mkdir -p /opt/tally
 cd /opt/tally
 sudo git clone https://github.com/phwecker/2021-studio-tally.git
-# Or, if you want to use SSH:
-# git clone git@github.com:phwecker/2021-studio-tally.git
+# Or SSH: git clone git@github.com:phwecker/2021-studio-tally.git
 
-# Move into the backend and frontend directories and install dependencies
 cd /opt/tally/2021-studio-tally/tally-backend
 npm install
 cd ../tally-frontend
@@ -181,9 +202,7 @@ npm install
 npm run build
 ```
 
-Continue with the systemd and kiosk setup steps as described below.
-
-> **Note:** This method still requires internet access on the Pi during the install step, as npm will fetch dependencies from the internet.
+Then manually configure systemd and kiosk (see Manual Deployment section).
 
 ### Step 5: Configure Static IP Address (AFTER All Installs Complete)
 

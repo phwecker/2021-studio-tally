@@ -65,9 +65,44 @@ This guide provides the fastest path to deploying your first tally device.
 
 ## Deployment Steps (Do in Order!)
 
-### 1. System Updates (REQUIRES INTERNET - Do First!)
+### 1. Deploy & Install (REQUIRES INTERNET - Scripted Method)
 
 ⚠️ **Do this while Pi is still on internet-connected network**
+
+**🚀 Recommended: One-Command Installation**
+
+From your Mac terminal:
+
+```bash
+cd /Users/phwecker/Dropbox/MICROSOFT/studio/tally/atem-tally
+./pi-deployment/scripts/deploy-to-pi.sh
+```
+
+Enter Pi's **temporary IP address** when prompted. Then on the Pi:
+
+```bash
+/tmp/tally-scripts/install-tally.sh
+```
+
+**This script automatically handles:**
+
+- System updates (`apt update && upgrade`)
+- Installing all dependencies (Node.js, npm, git, chromium, X11, etc.)
+- Installing npm packages
+- Building frontend
+- Configuring systemd services
+- Setting up kiosk mode
+
+✅ **Skip to Step 2** after running the script!
+
+---
+
+**📋 Manual Fallback (if script fails)**
+
+<details>
+<summary>Click to expand manual installation steps</summary>
+
+If the automated script fails:
 
 ```bash
 sudo apt update && sudo apt upgrade -y
@@ -89,46 +124,15 @@ node --version
 npm --version
 ```
 
-### 2. Deploy Files to Pi (REQUIRES INTERNET)
+Then manually complete npm installs and systemd setup (see DEPLOYMENT_GUIDE.md "Manual Deployment" section).
 
-⚠️ **Still on internet-connected network**
+</details>
 
-From your Mac terminal:
+---
 
-```bash
-cd /Users/phwecker/Dropbox/MICROSOFT/studio/tally/atem-tally
-./pi-deployment/scripts/deploy-to-pi.sh
-```
+### 2. Configure Static IP (Do AFTER installs)
 
-Enter Pi's **temporary IP address** when prompted.
-
-### 3. Run Installation Script (REQUIRES INTERNET)
-
-⚠️ **Still on internet-connected network**
-
-SSH to Pi (if not already connected):
-
-```bash
-ssh pi@<temporary-ip>
-```
-
-Run installation:
-
-```bash
-/tmp/tally-scripts/install-tally.sh
-```
-
-This will:
-
-- Install application files
-- Install Node.js packages (needs internet!)
-- Build frontend
-- Configure systemd services
-- Set up kiosk mode
-
-### 4. Configure Static IP (Do AFTER installs)
-
-⚠️ **Do this ONLY after Steps 1-3 are complete**
+⚠️ **Do this ONLY after Step 1 is complete**
 
 While still SSH'd to Pi:
 
@@ -159,7 +163,7 @@ sudo nmtui
 - Camera 3: 192.168.10.173
 - etc.
 
-### 5. Move to Studio Network
+### 3. Move to Studio Network
 
 1. **Disconnect Pi** from internet network
 2. **Connect Pi to studio network** (192.168.10.x subnet)
@@ -170,7 +174,7 @@ sudo nmtui
    ssh pi@192.168.10.171  # Use your device's IP
    ```
 
-### 6. Configure Device Settings (No Internet Required)
+### 4. Configure Device Settings (No Internet Required)
 
 Now on the studio network, configure device-specific settings:
 
@@ -186,7 +190,7 @@ You'll be prompted for:
 - **Gateway**: Press Enter to accept default (192.168.10.1)
 - **ATEM Switcher IP**: Press Enter to accept default (192.168.10.240) or enter your switcher's IP
 
-### 7. Final Reboot
+### 5. Final Reboot
 
 ```bash
 sudo reboot

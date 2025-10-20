@@ -16,25 +16,39 @@ The studio network (192.168.10.x subnet) does NOT provide:
 ✅ **Boot Pi on a network WITH internet access**
 ✅ **Complete ALL installations while on this network**
 
+**🚀 Recommended: Use Automated Script (Easiest)**
+
 ```
 1. Flash SD card with Raspberry Pi OS (Desktop recommended for VNC)
    - Use Raspberry Pi Imager with gear icon ⚙️ to configure:
-   - Enable SSH (password authentication)
-   - Set username/password
-   - Set hostname (optional)
+     - Enable SSH (password authentication)
+     - Set username/password
+     - Set hostname (optional)
 2. Boot Pi on YOUR MAIN NETWORK (with DHCP and internet)
 3. Find Pi's temporary IP address
 4. SSH into Pi: ssh pi@<temporary-ip>
-5. Change default password (if not already set in imager): passwd
-6. Enable VNC for remote access (optional but recommended):
-   sudo raspi-config → Interface Options → VNC → Yes
-   (Connect via VNC client to <temporary-ip>:5900)
+5. Change default password (if not set in imager): passwd
+6. Enable VNC (optional): sudo raspi-config → Interface Options → VNC → Yes
+7. Deploy & install from Mac:
+   ./pi-deployment/scripts/deploy-to-pi.sh
+   (Enter Pi IP when prompted)
+8. Run install on Pi: /tmp/tally-scripts/install-tally.sh
+   (Script automatically handles: apt update/upgrade, install dependencies, npm install, build, systemd setup)
+```
+
+**📋 Manual Fallback (If Script Fails)**
+
+<details>
+<summary>Click to expand manual steps</summary>
+
+```
 7. System updates: sudo apt update && sudo apt upgrade -y
 8. Install dependencies: sudo apt install -y nodejs npm git chromium xserver-xorg x11-xserver-utils xinit openbox unclutter
 9. Deploy files from Mac: ./pi-deployment/scripts/deploy-to-pi.sh
-10. Install application: /tmp/tally-scripts/install-tally.sh
-    (This installs npm packages - REQUIRES INTERNET!)
+10. Manually install npm packages and configure systemd (see DEPLOYMENT_GUIDE.md Manual Deployment section)
 ```
+
+</details>
 
 ### Phase 2: Studio Network (FINAL)
 
@@ -43,18 +57,18 @@ The studio network (192.168.10.x subnet) does NOT provide:
 ✅ **Configure device settings**
 
 ```
-12. Configure static IP using raspi-config:
+9.  Configure static IP using raspi-config:
     sudo raspi-config → Advanced Options → Network Config → NetworkManager → Reboot
     sudo nmtui → Edit connection → Manual → 192.168.10.171/24
-13. Reboot: sudo reboot
-14. PHYSICALLY DISCONNECT from internet network
-15. PHYSICALLY CONNECT to studio network
-16. Wait ~30 seconds
-17. SSH to static IP: ssh pi@192.168.10.171
+10. Reboot: sudo reboot
+11. PHYSICALLY DISCONNECT from internet network
+12. PHYSICALLY CONNECT to studio network
+13. Wait ~30 seconds
+14. SSH to static IP: ssh pi@192.168.10.171
     (Or connect via VNC to 192.168.10.171:5900 for GUI)
-18. Configure device: /tmp/tally-scripts/configure-device.sh
-19. Final reboot: sudo reboot
-20. Verify via VNC or physical display that kiosk mode is working
+15. Configure device: /tmp/tally-scripts/configure-device.sh
+16. Final reboot: sudo reboot
+17. Verify via VNC or physical display that kiosk mode is working
 ```
 
 ## What Happens If You Do It Wrong

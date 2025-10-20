@@ -45,7 +45,7 @@ sudo apt install -y \
     nodejs \
     npm \
     git \
-    chromium-browser \
+    chromium \
     xserver-xorg \
     x11-xserver-utils \
     xinit \
@@ -117,7 +117,7 @@ echo "Tally service installed and enabled."
 echo ""
 echo "Step 8: Setting up kiosk mode..."
 
-# Create openbox autostart directory
+# Create openbox autostart directory (for X11/Openbox systems)
 mkdir -p /home/pi/.config/openbox
 
 # Create openbox autostart script
@@ -134,7 +134,7 @@ unclutter -idle 0.1 -root &
 sleep 10
 
 # Start Chromium in kiosk mode
-chromium-browser \
+chromium \
   --kiosk \
   --noerrdialogs \
   --disable-infobars \
@@ -155,28 +155,43 @@ EOF
 
 chmod +x /home/pi/.xinitrc
 
-# Create systemd service to auto-start X on boot
-sudo tee /etc/systemd/system/kiosk.service > /dev/null << 'EOF'
-[Unit]
-Description=Kiosk Mode X Server
-After=tally.service
-Wants=tally.service
+# Create LXDE autostart (for X11/LXDE systems)
+mkdir -p /home/pi/.config/lxsession/LXDE-pi
 
-[Service]
-Type=simple
-User=pi
-Environment=DISPLAY=:0
-ExecStart=/usr/bin/startx
-Restart=always
-RestartSec=5
-
-[Install]
-WantedBy=graphical.target
+cat > /home/pi/.config/lxsession/LXDE-pi/autostart << 'EOF'
+@xset s off
+@xset -dpms
+@xset s noblank
+@unclutter -idle 0.1 -root
+@sh -c 'sleep 10 && chromium --kiosk --noerrdialogs --disable-infobars --disable-session-crashed-bubble --disable-component-update --check-for-update-interval=31536000 --start-fullscreen --app=http://localhost:8081'
 EOF
 
-sudo systemctl daemon-reload
-sudo systemctl enable kiosk.service
-echo "Kiosk mode configured and enabled."
+# Create Labwc autostart (for Wayland/Labwc systems - used in newer Raspberry Pi OS)
+mkdir -p /home/pi/.config/labwc
+
+cat > /home/pi/.config/labwc/autostart << 'EOF'
+# Wait for tally service to be ready
+until curl -s http://localhost:8081/tally > /dev/null 2>&1; do
+  sleep 2
+done
+
+# Wait an additional moment for frontend to fully load
+sleep 3
+
+# Clear any Chromium cache/state to prevent white screen issues
+rm -rf /home/pi/.cache/chromium /home/pi/.config/chromium
+
+# Start Chromium in kiosk mode
+chromium --kiosk --noerrdialogs --disable-infobars --disable-session-crashed-bubble --disable-component-update --check-for-update-interval=31536000 --start-fullscreen --app=http://localhost:8081 &
+EOF
+
+chmod +x /home/pi/.config/labwc/autostart
+
+# Configure autologin to desktop (works on both X11 and Wayland)
+echo "Configuring autologin to desktop..."
+sudo raspi-config nonint do_boot_behaviour B4 || echo "Note: Auto-login configuration may require manual setup via raspi-config"
+
+echo "Kiosk mode configured and enabled for X11/LXDE and Wayland/Labwc."
 
 echo ""
 echo "============================================"
