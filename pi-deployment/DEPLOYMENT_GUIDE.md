@@ -137,6 +137,28 @@ This will:
 
 If you prefer manual steps, see the "Manual Deployment" section at the end of this guide.
 
+**Option C: Manual deployment from GitHub (requires internet on Pi)**
+
+If you prefer to clone the code directly from GitHub on the Pi:
+
+```bash
+cd /opt/tally
+sudo git clone https://github.com/phwecker/2021-studio-tally.git
+# Or, if you want to use SSH:
+# git clone git@github.com:phwecker/2021-studio-tally.git
+
+# Move into the backend and frontend directories and install dependencies
+cd /opt/tally/2021-studio-tally/tally-backend
+npm install
+cd ../tally-frontend
+npm install
+npm run build
+```
+
+Continue with the systemd and kiosk setup steps as described below.
+
+> **Note:** This method still requires internet access on the Pi during the install step, as npm will fetch dependencies from the internet.
+
 ### Step 5: Configure Static IP Address (AFTER All Installs Complete)
 
 ⚠️ **CRITICAL: Do this AFTER completing Steps 3-4. Once you set static IP and move to studio network, you'll lose internet access.**
