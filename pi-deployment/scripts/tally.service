@@ -1,0 +1,17 @@
+[Unit]
+Description=ATEM Tally Service
+After=network.target
+
+[Service]
+Type=simple
+User=pi
+WorkingDirectory=/opt/tally/tally-backend
+ExecStart=/usr/bin/node /opt/tally/tally-backend/index.js
+Restart=always
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=tally
+
+[Install]
+WantedBy=multi-user.target
