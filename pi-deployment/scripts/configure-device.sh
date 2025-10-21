@@ -56,7 +56,10 @@ echo "Applying configuration..."
 
 # Update hostname
 echo "${HOSTNAME}" | sudo tee /etc/hostname > /dev/null
-sudo sed -i "s/127.0.1.1.*/127.0.1.1\t${HOSTNAME}/" /etc/hosts
+
+# Update /etc/hosts - remove old 127.0.1.1 entry and add new one
+sudo sed -i '/^127.0.1.1/d' /etc/hosts
+echo -e "127.0.1.1\t${HOSTNAME}" | sudo tee -a /etc/hosts > /dev/null
 
 # Configure static IP
 sudo tee -a /etc/dhcpcd.conf > /dev/null << EOF

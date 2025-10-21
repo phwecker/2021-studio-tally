@@ -66,13 +66,13 @@ echo "Copying frontend files..."
 rsync -avz --exclude 'node_modules' --exclude 'dist' \
     tally-frontend/ ${PI_USER}@${PI_IP}:/opt/tally/tally-frontend/
 
-# Copy deployment scripts
+# Copy deployment scripts to permanent location
 echo ""
 echo "Copying deployment scripts..."
-ssh ${PI_USER}@${PI_IP} "mkdir -p /tmp/tally-scripts"
+ssh ${PI_USER}@${PI_IP} "mkdir -p /opt/tally/scripts"
 scp pi-deployment/scripts/*.service ${PI_USER}@${PI_IP}:/tmp/
-scp pi-deployment/scripts/*.sh ${PI_USER}@${PI_IP}:/tmp/tally-scripts/
-ssh ${PI_USER}@${PI_IP} "chmod +x /tmp/tally-scripts/*.sh"
+scp pi-deployment/scripts/*.sh ${PI_USER}@${PI_IP}:/opt/tally/scripts/
+ssh ${PI_USER}@${PI_IP} "chmod +x /opt/tally/scripts/*.sh"
 
 echo ""
 echo "============================================"
@@ -85,15 +85,15 @@ echo "1. SSH into the Pi:"
 echo "   ssh ${PI_USER}@${PI_IP}"
 echo ""
 echo "2. Run the installation script:"
-echo "   /tmp/tally-scripts/install-tally.sh"
+echo "   /opt/tally/scripts/install-tally.sh"
 echo ""
 echo "3. Run the configuration script:"
-echo "   /tmp/tally-scripts/configure-device.sh"
+echo "   /opt/tally/scripts/configure-device.sh"
 echo ""
 echo "4. Reboot the Pi:"
 echo "   sudo reboot"
 echo ""
 echo "Or run all steps automatically (recommended):"
 echo "   ssh ${PI_USER}@${PI_IP}"
-echo "   /tmp/tally-scripts/install-tally.sh && /tmp/tally-scripts/configure-device.sh"
+echo "   /opt/tally/scripts/install-tally.sh && /opt/tally/scripts/configure-device.sh"
 echo ""

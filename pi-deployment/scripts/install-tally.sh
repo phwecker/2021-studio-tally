@@ -135,14 +135,15 @@ sleep 10
 
 # Start Chromium in kiosk mode
 chromium \
-  --kiosk \
-  --noerrdialogs \
-  --disable-infobars \
-  --disable-session-crashed-bubble \
-  --disable-component-update \
-  --check-for-update-interval=31536000 \
-  --start-fullscreen \
-  --app=http://localhost:8081 &
+    --password-store=basic \
+    --kiosk \
+    --noerrdialogs \
+    --disable-infobars \
+    --disable-session-crashed-bubble \
+    --disable-component-update \
+    --check-for-update-interval=31536000 \
+    --start-fullscreen \
+    --app=http://localhost:8081 &
 EOF
 
 chmod +x /home/pi/.config/openbox/autostart
@@ -163,7 +164,7 @@ cat > /home/pi/.config/lxsession/LXDE-pi/autostart << 'EOF'
 @xset -dpms
 @xset s noblank
 @unclutter -idle 0.1 -root
-@sh -c 'sleep 10 && chromium --kiosk --noerrdialogs --disable-infobars --disable-session-crashed-bubble --disable-component-update --check-for-update-interval=31536000 --start-fullscreen --app=http://localhost:8081'
+@sh -c 'sleep 10 && chromium --password-store=basic --kiosk --noerrdialogs --disable-infobars --disable-session-crashed-bubble --disable-component-update --check-for-update-interval=31536000 --start-fullscreen --app=http://localhost:8081'
 EOF
 
 # Create Labwc autostart (for Wayland/Labwc systems - used in newer Raspberry Pi OS)
@@ -172,7 +173,7 @@ mkdir -p /home/pi/.config/labwc
 cat > /home/pi/.config/labwc/autostart << 'EOF'
 # Wait for tally service to be ready
 until curl -s http://localhost:8081/tally > /dev/null 2>&1; do
-  sleep 2
+    sleep 2
 done
 
 # Wait an additional moment for frontend to fully load
@@ -182,7 +183,7 @@ sleep 3
 rm -rf /home/pi/.cache/chromium /home/pi/.config/chromium
 
 # Start Chromium in kiosk mode
-chromium --kiosk --noerrdialogs --disable-infobars --disable-session-crashed-bubble --disable-component-update --check-for-update-interval=31536000 --start-fullscreen --app=http://localhost:8081 &
+chromium --password-store=basic --kiosk --noerrdialogs --disable-infobars --disable-session-crashed-bubble --disable-component-update --check-for-update-interval=31536000 --start-fullscreen --app=http://localhost:8081 &
 EOF
 
 chmod +x /home/pi/.config/labwc/autostart
@@ -199,11 +200,19 @@ echo "Installation Complete!"
 echo "============================================"
 echo ""
 echo "Next steps:"
-echo "  1. Run the configuration script to set device-specific settings:"
-echo "     /opt/tally/pi-deployment/scripts/configure-device.sh"
 echo ""
-echo "  2. Reboot the system to start the tally in kiosk mode:"
-echo "     sudo reboot"
+echo "Option 1 - Run configuration script (if available):"
+echo "  /opt/tally/scripts/configure-device.sh"
+echo ""
+echo "Option 2 - Manual configuration:"
+echo "  1. Edit /opt/tally/tally-backend/config/tally.config.json"
+echo "     - Set inputID (camera number)"
+echo "     - Set switcherIP (ATEM IP address)"
+echo "  2. Configure static IP in /etc/dhcpcd.conf"
+echo "  3. Set hostname: sudo hostnamectl set-hostname tally-camX"
+echo ""
+echo "After configuration, reboot the system:"
+echo "  sudo reboot"
 echo ""
 echo "After reboot, the system will automatically:"
 echo "  - Start the tally backend service"
@@ -211,5 +220,4 @@ echo "  - Display the tally interface in fullscreen"
 echo ""
 echo "To check service status after reboot:"
 echo "  sudo systemctl status tally.service"
-echo "  sudo systemctl status kiosk.service"
 echo ""
